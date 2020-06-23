@@ -8,5 +8,6 @@
       "matches": ["https://cracking-the-cryptic.web.app/sudoku/*"],
       "js": ["main.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": ["page.js"]
 }
