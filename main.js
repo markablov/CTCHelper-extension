@@ -1,6 +1,5 @@
 (function(){
   const CONTROLS_PANEL_CLASS = 'sudoku-play__controls-container';
-  const ACTION_SELECT_ID = 'ctc_helper-select';
 
   const createCage = () => {
   };
@@ -35,7 +34,6 @@
     controlsContainer.append(additionalControlsContainer);
 
     const actionsSelect = document.createElement('select');
-    actionsSelect.id = ACTION_SELECT_ID;
     for (const [value, { title }] of Object.entries(actions)) {
       const actionSelectOption = document.createElement('option');
       actionSelectOption.appendChild(document.createTextNode(title));
@@ -50,5 +48,10 @@
     actionButton.style.padding = '0 10px';
     actionButton.style.margin = '0 10px';
     additionalControlsContainer.append(actionButton);
+
+    actionButton.addEventListener('click', () => {
+      const selectedAction = actionsSelect.selectedOptions[0].value;
+      actions[selectedAction].action.call(null);
+    });
   })();
 })();
