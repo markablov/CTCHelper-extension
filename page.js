@@ -2,7 +2,7 @@
   const CONTROLS_PANEL_CLASS = 'sudoku-play__controls-container';
 
   const getTextHints = () => {
-    const hints = [...document.querySelectorAll('.sudoku-shapetext--overlay')];
+    const hints = [...document.querySelectorAll('.sudoku-shapetext--overlay, .sudoku-cell__cage-value')];
     return hints.filter((element) => element.innerText.trim() !== '');
   };
 
