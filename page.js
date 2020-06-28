@@ -10,25 +10,8 @@
   const createCage = () => {
   };
 
-  const getButtonTextForHintMode = () => (modes.hint ? 'Disable' : 'Enable');
-
-  const changeHintMode = ({ actionButton }) => {
-    modes.hint = !modes.hint;
-    getTextHints().forEach((element) => element.style['pointer-events'] = (modes.hint ? 'auto' : 'none'));
-    actionButton.textContent = getButtonTextForHintMode();
-  };
-
-  const actions = {
-    createCage: {
-      title: 'Create cage',
-      action: createCage,
-    },
-    changeHintMode: {
-      title: 'Hint tick mode',
-      action: changeHintMode,
-      buttonText: () => getButtonTextForHintMode(),
-    },
-  };
+  const changeHintMode = (enable) =>
+    getTextHints().forEach((element) => element.style['pointer-events'] = (enable ? 'auto' : 'none'));
 
   const waitForRender = () => new Promise((resolve) => {
     const observer = new MutationObserver((mutations) => {
@@ -50,6 +33,24 @@
     return reactInternalsKey ? rootComponent[reactInternalsKey].child.memoizedProps.store : null;
   };
 
+  const createHintTickCheckbox = () => {
+    const hintTickCheckbox = document.createElement('input');
+    hintTickCheckbox.type = 'checkbox';
+    hintTickCheckbox.value = 'on';
+    hintTickCheckbox.id = 'hintTickCheckbox';
+    hintTickCheckbox.addEventListener('change', () => changeHintMode(hintTickCheckbox.checked));
+
+    const hintTickCheckboxLabel = document.createElement('label');
+    hintTickCheckboxLabel.htmlFor = 'hintTickCheckbox';
+    hintTickCheckboxLabel.appendChild(document.createTextNode('Hint tick mode'));
+
+    const hintTickCheckboxContainer = document.createElement('div');
+    hintTickCheckboxContainer.appendChild(hintTickCheckbox);
+    hintTickCheckboxContainer.appendChild(hintTickCheckboxLabel);
+
+    return hintTickCheckboxContainer;
+  };
+
   const attachControls = () => {
     const controlsContainer = document.querySelector(`.${CONTROLS_PANEL_CLASS}`);
     const reduxStore = findReduxStore();
@@ -60,37 +61,7 @@
     const additionalControlsContainer = document.createElement('div');
     controlsContainer.append(additionalControlsContainer);
 
-    const actionsSelect = document.createElement('select');
-    for (const [value, { title }] of Object.entries(actions)) {
-      const actionSelectOption = document.createElement('option');
-      actionSelectOption.appendChild(document.createTextNode(title));
-      actionSelectOption.value = value;
-      actionsSelect.append(actionSelectOption);
-    }
-    additionalControlsContainer.prepend(actionsSelect);
-
-    const actionButton = document.createElement('div');
-    actionButton.className = 'action-button sudoku-play__action-button';
-    actionButton.textContent = 'Apply';
-    actionButton.style.padding = '0 10px';
-    actionButton.style.margin = '0 10px';
-    additionalControlsContainer.append(actionButton);
-
-    const ctx = {
-      store: reduxStore,
-      actionButton,
-    };
-
-    actionButton.addEventListener('click', () => {
-      const selectedAction = actionsSelect.selectedOptions[0].value;
-      actions[selectedAction].action.call(null, ctx);
-    });
-
-    actionsSelect.addEventListener('change', () => {
-      const selectedAction = actionsSelect.selectedOptions[0].value;
-      const buttonText = actions[selectedAction].buttonText || 'Apply';
-      actionButton.textContent = typeof buttonText === 'function' ? buttonText() : buttonText;
-    });
+    additionalControlsContainer.appendChild(createHintTickCheckbox());
   };
 
   const registerOverlayHandlers = () => {
