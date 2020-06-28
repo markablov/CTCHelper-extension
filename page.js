@@ -1,13 +1,9 @@
 (function(){
   const CONTROLS_PANEL_CLASS = 'sudoku-play__controls-container';
 
-  const getTextHints = () => [...document.querySelectorAll('.sudoku-shapetext--overlay')];
-
-  const modes = {
-    hint: false,
-  };
-
-  const createCage = () => {
+  const getTextHints = () => {
+    const hints = [...document.querySelectorAll('.sudoku-shapetext--overlay')];
+    return hints.filter((element) => element.innerText.trim() !== '');
   };
 
   const changeHintMode = (enable) =>
